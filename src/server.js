@@ -1,6 +1,10 @@
 // Cargar variables de entorno desde .env
 require('dotenv').config();
 
+const connectDB = require('./config/db');
+
+connectDB();
+
 // Importar la aplicación Express ya configurada
 const app = require('./app');
 
@@ -35,6 +39,7 @@ process.on('SIGTERM', () => {
   server.close(() => {
     console.log('Servidor cerrado');
     process.exit(0);
+    
   });
 });
 
