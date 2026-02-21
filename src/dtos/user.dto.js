@@ -73,11 +73,12 @@ const createUserSchema = Joi.object({
  * - PERO debe proporcionar al menos 1 campo
  */
 const updateUserSchema = Joi.object({
-  email: Joi.string().email(),        // ← Opcional pero si existe, debe ser email válido
+  email: Joi.string().email(),
   firstName: Joi.string().min(2).max(50),
   lastName: Joi.string().min(2).max(50),
-  bio: Joi.string().max(500)          // ← Campo nuevo
-}).min(1).messages({                   // ← DEBE haber al menos 1 campo
+  bio: Joi.string().max(500),
+  role: Joi.string().valid('user', 'admin', 'moderator')  // ← AGREGAR ESTO
+}).min(1).messages({
   'object.min': 'Debes proporcionar al menos un campo para actualizar'
 });
 
@@ -115,13 +116,9 @@ class UserResponseDTO {
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.bio = user.bio || null;
+    this.role = user.role || 'user';  // ← AGREGAR ESTO
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
-    
-    // ❌ NO incluir:
-    // this.password          ← Nunca exponer
-    // this.isAdmin           ← Datos internos
-    // this.secretToken       ← Información sensible
   }
 }
 

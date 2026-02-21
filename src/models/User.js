@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -25,19 +24,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'moderator'],
+    default: 'user'
   }
-});
-
-// Middleware: actualizar updatedAt antes de guardar
-userSchema.pre('save', async function () {
-  // lógica async
+}, {
+  timestamps: true  // ← Esto REEMPLAZA los pre-hooks
 });
 
 module.exports = mongoose.model('User', userSchema);

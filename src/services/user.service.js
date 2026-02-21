@@ -23,50 +23,46 @@ class UserService {
   /**
    * Crea un nuevo usuario
    */
-  static async createUser(createUserDTO) {
-    // Verificar si el email ya existe
-    const existingUser = await User.findOne({ email: createUserDTO.email });
-    if (existingUser) {
-      throw new AppError('El email ya está registrado', 409);
-    }
-
-    // Hashear contraseña
-    const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
-
-    // Crear nuevo usuario en BD
-    const newUser = await User.create({
-      email: createUserDTO.email,
-      password: hashedPassword,
-      firstName: createUserDTO.firstName,
-      lastName: createUserDTO.lastName
-    });
-
-    return new UserResponseDTO(newUser);
+static async createUser(createUserDTO) {
+  const existingUser = await User.findOne({ email: createUserDTO.email });
+  if (existingUser) {
+    throw new AppError('El email ya está registrado', 409);
   }
+
+  const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
+
+  const newUser = await User.create({
+    email: createUserDTO.email,
+    password: hashedPassword,
+    firstName: createUserDTO.firstName,
+    lastName: createUserDTO.lastName,
+    role: createUserDTO.role || 'user'  // ← AGREGAR ESTO
+  });
+
+  return new UserResponseDTO(newUser);
+}
 
   /**
    * Autentica un usuario
    */
-  static async login(email, password, generateToken) {
-    // Buscar usuario en BD
-    const user = await User.findOne({ email });
+static async login(email, password, generateToken) {
+  const user = await User.findOne({ email });
 
-    if (!user) {
-      throw new AppError('Credenciales inválidas', 401);
-    }
-
-    // Verificar contraseña
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new AppError('Credenciales inválidas', 401);
-    }
-
-    // Generar token
-    const token = generateToken(user.id, user.email);
-
-    return new AuthResponseDTO(user, token);
+  if (!user) {
+    throw new AppError('Credenciales inválidas', 401);
   }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new AppError('Credenciales inválidas', 401);
+  }
+
+  // ✅ IMPORTANTE: Pasar los 3 parámetros incluyendo role
+  const token = generateToken(user.id, user.email, user.role);
+
+  return new AuthResponseDTO(user, token);
+}
 
   /**
    * Obtiene todos los usuarios
