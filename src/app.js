@@ -1,6 +1,9 @@
 // Importa el framework Express para crear el servidor y manejar rutas
 const express = require('express');
 
+// Importa el módulo de configuración de Swagger para la documentación de la API
+const { swaggerUi, specs } = require('./config/swagger');
+
 // Importa el middleware CORS para controlar qué dominios pueden consumir la API
 const cors = require('cors');
 
@@ -12,6 +15,7 @@ const morgan = require('morgan');
 
 // Importa express-rate-limit para limitar la cantidad de peticiones por IP
 const rateLimit = require('express-rate-limit');
+
 
 
 // Importa las rutas relacionadas con usuarios
@@ -89,6 +93,10 @@ app.use(express.json({ limit: '10mb' }));
 // También limita el tamaño del body a 10MB
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// ====== DOCUMENTACIÓN CON SWAGGER ======
+
+// Configura la ruta /api-docs para servir la documentación generada por Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // ====== RUTAS ======
 

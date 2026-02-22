@@ -1,188 +1,97 @@
-API REST - Gestión de Usuarios con Autenticación JWT
+API REST Profesional – Node.js + Express + JWT
 
-API REST desarrollada en **Node.js + Express** siguiendo arquitectura por capas (routes, controllers, services, repositories, middleware).
+Backend desarrollado con arquitectura modular, autenticación JWT, autorización por roles, pruebas automatizadas y documentación profesional con Swagger.
 
-Incluye autenticación con JWT, autorización por usuario y CRUD completo de usuarios.
+Descripción:
 
----
+Esta API REST fue desarrollada como proyecto práctico para fortalecer conocimientos en:
 
-Características
+Arquitectura backend escalable
 
-* ✅ Registro de usuarios
-* ✅ Login con generación de JWT
-* ✅ Middleware de autenticación
-* ✅ Middleware de autorización (validación de permisos)
-* ✅ Actualización de perfil
-* ✅ Eliminación de usuario con control de acceso
-* ✅ Estructura de respuesta estandarizada
-* ✅ Arquitectura limpia por capas
-* 🔜 Próximo paso: integración con base de datos (PostgreSQL + Prisma)
+Autenticación y autorización
 
----
+Testing profesional
 
-##  Arquitectura del Proyecto
+Buenas prácticas (Clean Code + separación de responsabilidades)
 
-```
+Incluye manejo de usuarios con roles (user, admin) y protección de rutas.
+
+Tecnologías utilizadas:
+
+Node.js
+
+Express
+
+JSON Web Token (JWT)
+
+MongoDB
+
+Jest (Unit & Integration Testing)
+
+Swagger (Documentación API)
+
+Arquitectura del Proyecto:
 src/
-│
-├── routes/        → Definición de endpoints
-├── controllers/   → Manejo de request/response
-├── services/      → Lógica de negocio
-├── repositories/  → Acceso a datos
-├── middleware/    → Autenticación y permisos
-├── dtos/          → Validación y transferencia de datos
-├── utils/         → Funciones auxiliares
-└── app.js         → Configuración principal
-```
+ ├── controllers/
+ ├── services/
+ ├── repositories/
+ ├── routes/
+ ├── middleware/
+ ├── dtos/
+ ├── utils/
+ └── __tests__/
 
----
+Arquitectura basada en separación por capas:
 
-Autenticación
+Controller → Maneja HTTP
 
-Se utiliza **JWT (JSON Web Token)** para proteger rutas privadas.
+Service → Lógica de negocio
 
-Flujo:
+Repository → Acceso a datos
 
-1. El usuario se registra
-2. Hace login
-3. Recibe un `token`
-4. Envía el token en el header:
+DTO → Normalización de datos
 
-```
-Authorization: Bearer TU_TOKEN_AQUI
-```
+Middleware → Autenticación y autorización
 
----
+Autenticación y Roles
 
-Endpoints
+La API implementa:
 
-🟢 Registro
+Registro de usuario
 
-```
-POST /api/auth/register
-```
+Login con generación de JWT
 
-🔵 Login
+Middleware de autenticación
 
-```
-POST /api/auth/login
-```
+Middleware de autorización por rol (admin)
 
-🟡 Obtener perfil
+Testing
 
-```
-GET /api/users/:id
-```
+Pruebas automatizadas con:
 
-Requiere token
+npm test
 
-🟠 Actualizar perfil
+Incluye:
 
-```
-PUT /api/users/:id
-```
+Unit Tests
 
-Requiere token y ser propietario
+Integration Tests
 
-🔴 Eliminar usuario
+Mocking de servicios externos
 
-```
-DELETE /api/users/:id
-```
+Documentación Swagger
 
-Requiere token y permisos
+La documentación interactiva está disponible en:
 
----
+/api-docs
 
-Instalación
+Permite probar los endpoints directamente desde el navegador.
 
-1️⃣ Clonar repositorio
-
-```
-git clone https://github.com/TU-USUARIO/TU-REPO.git
-cd TU-REPO
-```
-
-2️⃣ Instalar dependencias
-
-```
+Cómo ejecutar el proyecto
 npm install
-```
-
-3️⃣ Crear archivo `.env`
-
-```
-PORT=3000
-JWT_SECRET=tu_clave_super_secreta
-```
-
-4️⃣ Ejecutar proyecto
-
-```
 npm run dev
-```
 
----
+Autor:
 
-Respuesta estándar de la API
-
-Éxito:
-
-```json
-{
-  "success": true,
-  "message": "Operación realizada correctamente",
-  "data": {}
-}
-```
-
-Error:
-
-```json
-{
-  "success": false,
-  "message": "Mensaje descriptivo del error"
-}
-```
-
----
-
-Seguridad Implementada
-
-* Protección de rutas con middleware
-* Validación de token
-* Control de acceso por propietario
-* Manejo centralizado de errores
-
----
-
-Tecnologías Utilizadas
-
-* Node.js
-* Express
-* JWT
-* Arquitectura por capas
-* Variables de entorno con dotenv
-
----
-
-Próximas Mejoras
-
-* Integración con PostgreSQL o Mongo
-* ORM Prisma
-* Hash de contraseñas con bcrypt
-* Refresh Tokens
-* Tests automatizados
-* Dockerización
-* Documentación con Swagger
-
----
-
-Autor
-
-Desarrollado por Juan Carlos Londoño
-Proyecto académico y profesional de backend.
-
----
-
-
+Juan Carlos Londoño
+Backend Developer en formación | Ingeniería de Software

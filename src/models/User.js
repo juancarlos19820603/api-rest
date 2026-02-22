@@ -28,9 +28,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin', 'moderator'],
     default: 'user'
+  },
+  //Email verification (confirmar email)
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: {
+    type: String,
+    default: null
+  },
+  emailVerificationTokenExpires: {
+    type: Date,
+    default: null
+  },
+    // Password reset (restablecer contraseña)
+  passwordResetToken: {
+    type: String,
+    default: null
+  },
+  passwordResetTokenExpires: {
+    type: Date,
+    default: null
   }
 }, {
-  timestamps: true  // ← Esto REEMPLAZA los pre-hooks
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -140,15 +140,24 @@ class UserResponseDTO {
  */
 class CreateUserDTO {
   constructor(data) {
-    // Email: minúsculas + sin espacios
-    // juan@EXAMPLE.COM → juan@example.com
+    if (!data.email) {
+      throw new Error('Email es requerido');
+    }
+
+    if (!data.password) {
+      throw new Error('Password es requerido');
+    }
+
+    if (!data.firstName) {
+      throw new Error('First name es requerido');
+    }
+
+    if (!data.lastName) {
+      throw new Error('Last name es requerido');
+    }
+
     this.email = data.email.toLowerCase().trim();
-    
-    // Password: no transformar (está hasheado después)
     this.password = data.password;
-    
-    // Names: solo trim (preservar capitalización)
-    // "  Juan  " → "Juan"
     this.firstName = data.firstName.trim();
     this.lastName = data.lastName.trim();
   }

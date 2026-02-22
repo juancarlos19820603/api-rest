@@ -184,7 +184,7 @@ class UserController {
     try {
 
       // Extrae ID de parámetros
-      const userId = parseInt(req.params.id);
+        const userId = req.params.id;
 
       // Valida que sea número
       if (isNaN(userId)) {
@@ -219,30 +219,25 @@ class UserController {
    * DELETE /api/v1/users/:id
    * Elimina un usuario
    */
-  static async deleteUser(req, res, next) {
-    try {
+ /**
+ * DELETE /api/v1/users/:id
+ * Elimina un usuario
+ */
+static async deleteUser(req, res, next) {
+  try {
+    // ✅ Solo extraer el ID sin conversiones
+    const userId = req.params.id;
 
-      // Extrae ID de parámetros
-      const userId = parseInt(req.params.id);
+    // ✅ Llamar al servicio
+    const result = await UserService.deleteUser(userId);
 
-      // Valida que sea número
-      if (isNaN(userId)) {
-        return res.status(400).json({
-          success: false,
-          message: 'El ID debe ser un número válido'
-        });
-      }
+    // ✅ Retornar respuesta
+    return res.status(200).json(result);
 
-      // Llama al servicio para eliminar
-      const result = await UserService.deleteUser(userId);
-
-      // Devuelve resultado directamente (puede incluir mensaje personalizado)
-      return res.status(200).json(result);
-
-    } catch (error) {
-      next(error);
-    }
+  } catch (error) {
+    next(error);
   }
+}
 
 
   // ====== 7. OBTENER MI PERFIL (PROTEGIDO) ======
@@ -270,32 +265,143 @@ class UserController {
   }
 
 
-  // ====== 8. ACTUALIZAR MI PERFIL (PROTEGIDO) ======
+/**
+ * PUT /api/v1/users/:id
+ * Actualiza un usuario
+ */
+static async updateUser(req, res, next) {
+  try {
+    // ✅ Solo extraer el ID sin conversiones
+    const userId = req.params.id;
 
-  /**
-   * PUT /api/v1/users/profile/me
-   * Requiere autenticación JWT
-   */
-  static async updateProfile(req, res, next) {
-    try {
+    // ✅ Crear DTO
+    const updateUserDTO = new UpdateUserDTO(req.body);
 
-      // Convierte datos en DTO
-      const updateUserDTO = new UpdateUserDTO(req.body);
+    // ✅ Llamar al servicio
+    const user = await UserService.updateUser(userId, updateUserDTO);
 
-      // Usa userId obtenido del middleware authenticate
-      const user = await UserService.updateProfile(req.userId, updateUserDTO);
+    // ✅ Retornar respuesta
+    return res.status(200).json({
+      success: true,
+      message: 'Usuario actualizado correctamente',
+      data: user
+    });
 
-      // Devuelve respuesta HTTP 200
-      return res.status(200).json({
-        success: true,
-        message: 'Perfil actualizado correctamente',
-        data: user
-      });
-
-    } catch (error) {
-      next(error);
-    }
+  } catch (error) {
+    next(error);
   }
+}
+  /**
+ * Verifica el email del usuario
+ */
+static async verifyEmail(req, res, next) {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token de verificación requerido'
+      });
+    }
+
+    const result = await UserService.verifyEmail(token);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Email verificado correctamente'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Reenvía email de verificación
+ */
+static async resendVerificationEmail(req, res, next) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email requerido'
+      });
+    }
+
+    await UserService.resendVerificationEmail(email);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Email de verificación reenviado'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+/**
+ * Solicita reset de contraseña
+ */
+static async requestPasswordReset(req, res, next) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email requerido'
+      });
+    }
+
+    const result = await UserService.requestPasswordReset(email);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Resetea la contraseña
+ */
+static async resetPassword(req, res, next) {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token y nueva contraseña requeridos'
+      });
+    }
+
+    const result = await UserService.resetPassword(token, newPassword);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+/**
+ * PUT /api/v1/users/profile/me
+ * Actualiza el perfil del usuario autenticado
+ */
+static async updateProfile(req, res, next) {
+  try {
+    const updateUserDTO = new UpdateUserDTO(req.body);
+
+    const user = await UserService.updateProfile(req.userId, updateUserDTO);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 }
 
 
